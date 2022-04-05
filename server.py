@@ -57,14 +57,15 @@ def outdatas():
 
         # Введите информацию, которая будет предоставлена клиенту
         print('')
-        outdata = input('')
+        outdata = input('Введите сообщение своим пользователям\n')
+        #client.send(outdata)
         print()
         if outdata == 'enter':
             break
             print('Отправить всем:% s' % outdata)
             # Отправлять информацию каждому клиенту
-    for client in clients:
-        client.send(f"Сервер: {outdata}".encode('utf-8)'))
+        for client in clients:
+            client.send(f"Сервер: {outdata}".encode('utf-8)'))
 
 def indatas():
     while True:
