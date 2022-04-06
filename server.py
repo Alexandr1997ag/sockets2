@@ -1,6 +1,6 @@
 # Импортировать пакет сокетов
 import socket, threading
-
+import struct
 # Создаем объект сокета
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -38,19 +38,37 @@ def recv_data(client):
         # Принимаем информацию от клиента
         try:
             indata = client.recv(1024)
+            print(indata.decode('utf-8'))
+
+
+            # if bytes(indata):
+            #     print("Ожидание клиента...")
+            #     #conn, address = server.accept()
+            #     #print(f"{address[0]}:{address[1]} подключен.")
+
+            # receive_file(client, "image-received.png")
+            #     print("Получаем файл...")
+            #     receive_file(client, "image-received.png")
+            #     print("Файл получен.")
+
+
+
+
         except Exception as e:
-            clients.remove(client)
-            end.remove(client)
-            print("\ r" + '-' * 5 + f'Сервер отключен: текущее количество подключений: ----- {len (clients)}' + '-' * 5, end = '\n')
-            break
-        print(indata.decode('utf-8'))
+            pass
+            # clients.remove(client)
+            # end.remove(client)
+            # print("\ r" + '-' * 5 + f'Сервер отключен: текущее количество подключений: ----- {len (clients)}' + '-' * 5, end = '\n')
+            # break
+
+        # print(indata.decode('utf-8'))
         for clien in clients:
             # Перенаправить информацию от клиента и отправить ее другим клиентам
             if clien != client:
                 clien.send(indata)
             else:
                 continue
-
+        receive_file(client, "image-received.png")
 
 def outdatas():
     while True:
@@ -77,6 +95,51 @@ def indatas():
             index = threading.Thread(target=recv_data, args=(clien,))
             index.start()
             end.append(clien)
+
+def receive_file_size(sck: socket.socket):
+
+    # Эта функция обеспечивает получение байтов,
+    # указывающих на размер отправляемого файла,
+    # который кодируется клиентом с помощью
+    # struct.pack(), функция, которая генерирует
+    # последовательность байтов, представляющих размер файла.
+    fmt = "<Q"
+    expected_bytes = struct.calcsize(fmt)
+    received_bytes = 0
+    stream = bytes()
+    while received_bytes < expected_bytes:
+        chunk = sck.recv(expected_bytes - received_bytes)
+        stream += chunk
+        received_bytes += len(chunk)
+    filesize = struct.unpack(fmt, stream)[0]
+    return filesize
+def receive_file(sck: socket.socket, filename):
+
+    # Сначала считываем из сокета количество
+    # байтов, которые будут получены из файла.
+    filesize = receive_file_size(sck)
+    # Открываем новый файл для сохранения
+    # полученных данных.
+    with open(filename, "wb") as f:
+        received_bytes = 0
+        # Получаем данные из файла блоками по
+        # 1024 байта до объема
+        # общего количество байт, сообщенных клиентом.
+        while received_bytes < filesize:
+            chunk = sck.recv(1024)
+            if chunk:
+                f.write(chunk)
+                received_bytes += len(chunk)
+        print('Файл получен')
+# with socket.create_server((host, 9091)) as server:
+#     print("Ожидание клиента...")
+#     conn, address = server.accept()
+#     print(f"{address[0]}:{address[1]} подключен.")
+#     print("Получаем файл...")
+#     receive_file(conn, "image-received.png")
+#     print("Файл получен.")
+# print("Соединение закрыто.")
+
 
 # Создать многопоточность
 # Создать получающую информацию, объект потока

@@ -1,4 +1,6 @@
 import socket, threading
+import os
+import struct
 
 # Создать клиентский объект
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,17 +21,26 @@ client.connect((host, port))
 print('-' * 5 + 'подключился к серверу' + '-' * 5)
 print('-' * 5 + 'Enter, чтобы закрыть соединение с сервером' + '-' * 5)
 
+def send_file_func():
+    send_file(client, "image.png")
+    print('File has sent')
+
 
 def outdatas():
     while True:
 
         # Введите информацию, которая будет отправлена на сервер
         outdata = input('')
-        print()
+
         if outdata == 'enter':
             break
             # Отправить на сервер
         client.send(f'{name}:{outdata}'.encode('utf-8'))
+
+
+        # send_file(client, "image.png")
+        # print('File has sent')
+
         print('%s:%s' % (name, outdata))
 
 
@@ -40,6 +51,31 @@ def indatas():
 
         # Закодировать полученную информацию
         print(indata.decode('utf-8'))
+
+        if ('Сервер:' and 'Пришли файл') in indata.decode('utf-8'):
+            send_file_func()
+
+
+
+
+
+def send_file(sck: socket.socket, filename):
+    # Получение размера файла.
+    filesize = os.path.getsize(filename)
+    # В первую очередь сообщим серверу,
+    # сколько байт будет отправлено.
+    sck.sendall(struct.pack("<Q", filesize))
+    # Отправка файла блоками по 1024 байта.
+    with open(filename, "rb") as f:
+        while read_bytes := f.read(1024):
+            sck.sendall(read_bytes)
+# with socket.create_connection((host, 9091)) as conn:
+#     print("Подключение к серверу.")
+#     print("Передача файла...")
+#     send_file(conn, "image.png")
+#     print("Отправлено.")
+# print("Соединение закрыто.")
+
 
 
 # Создать многопоточность
