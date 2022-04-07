@@ -37,25 +37,35 @@ def recv_data(client):
     while True:
         # Принимаем информацию от клиента
         try:
+            receive_file(client, "image-received.png")
             indata = client.recv(1024)
             print(indata.decode('utf-8'))
+            # for clien in clients:
+            #     # Перенаправить информацию от клиента и отправить ее другим клиентам
+            #     if clien != client:
+            #         clien.send(indata)
+            #     else:
+            #         continue
 
 
         except Exception as e:
+            # если ловим текст, в блоке трай. работает except с заглушкой. иначе идем в функцию
+            pass
+            # # clients.remove(client)
+            # # end.remove(client)
+            # # print("\ r" + '-' * 5 + f'Сервер отключен: текущее количество подключений: ----- {len (clients)}' + '-' * 5, end = '\n')
+            # # break
 
-            clients.remove(client)
-            end.remove(client)
-            print("\ r" + '-' * 5 + f'Сервер отключен: текущее количество подключений: ----- {len (clients)}' + '-' * 5, end = '\n')
-            break
 
-        # print(indata.decode('utf-8'))
         for clien in clients:
             # Перенаправить информацию от клиента и отправить ее другим клиентам
             if clien != client:
                 clien.send(indata)
             else:
                 continue
-        receive_file(client, "image-received.png")
+
+        #receive_file(client, "image-received.png")
+        print('Файл получен')
 
 def outdatas():
     while True:
@@ -88,7 +98,7 @@ def receive_file_size(sck: socket.socket):
     # Эта функция обеспечивает получение байтов,
     # указывающих на размер отправляемого файла,
     # который кодируется клиентом с помощью
-    # struct.pack(), функция, которая генерирует
+    # struct.pack(), функции, которая генерирует
     # последовательность байтов, представляющих размер файла.
     fmt = "<Q"
     expected_bytes = struct.calcsize(fmt)
@@ -100,8 +110,9 @@ def receive_file_size(sck: socket.socket):
         received_bytes += len(chunk)
     filesize = struct.unpack(fmt, stream)[0]
     return filesize
-def receive_file(sck: socket.socket, filename):
 
+
+def receive_file(sck: socket.socket, filename):
     # Сначала считываем из сокета количество
     # байтов, которые будут получены из файла.
     filesize = receive_file_size(sck)
@@ -118,7 +129,6 @@ def receive_file(sck: socket.socket, filename):
                 f.write(chunk)
                 received_bytes += len(chunk)
         print('Файл получен')
-
 
 
 # Создать многопоточность
