@@ -59,17 +59,10 @@ def recv_data(client):
                 print(indata.decode('utf-8'))
             else:
                 print(indata.decode('utf-8'))
-            # for clien in clients:
-            #     # Перенаправить информацию от клиента и отправить ее другим клиентам
-            #     if clien != client:
-            #         clien.send(indata)
-            #     else:
-            #         continue
-
 
         except Exception as e:
-            # если ловим текст, в блоке трай. работает except с заглушкой. иначе идем в функцию
-            # pass
+            # если мы закрываем одного из клиентов, срабатывает блок except для того, чтобы не возникало
+            # ошибок в процессе работы
             clients.remove(client)
             end.remove(client)
             print("\ r" + '-' * 5 + f'Сервер отключен: текущее количество подключений: ----- {len (clients)}' + '-' * 5, end = '\n')
@@ -92,7 +85,6 @@ def outdatas():
         # Введите информацию, которая будет предоставлена клиенту
         print('')
         outdata = input('Введите сообщение своим пользователям\n')
-        #client.send(outdata)
         print()
         if outdata == 'enter':
             break

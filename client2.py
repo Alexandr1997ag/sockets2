@@ -28,7 +28,6 @@ def send_file_func():
 
 def outdatas():
     while True:
-
         # Введите информацию, которая будет отправлена на сервер
         outdata = input('')
 
@@ -36,9 +35,6 @@ def outdatas():
             break
             # Отправить на сервер
         client.send(f'{name}:{outdata}'.encode('utf-8'))
-
-
-
         print('%s:%s' % (name, outdata))
 
 
@@ -53,8 +49,6 @@ def indatas():
             client.send(f'{name}:Я прислал файл'.encode('utf-8'))
             send_file_func()
             #client.send(f'{name}:Я прислал файл'.encode('utf-8'))
-
-
 
 
 def send_file(sck: socket.socket, filename):
