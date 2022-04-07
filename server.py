@@ -41,25 +41,12 @@ def recv_data(client):
             print(indata.decode('utf-8'))
 
 
-            # if bytes(indata):
-            #     print("Ожидание клиента...")
-            #     #conn, address = server.accept()
-            #     #print(f"{address[0]}:{address[1]} подключен.")
-
-            # receive_file(client, "image-received.png")
-            #     print("Получаем файл...")
-            #     receive_file(client, "image-received.png")
-            #     print("Файл получен.")
-
-
-
-
         except Exception as e:
-            pass
-            # clients.remove(client)
-            # end.remove(client)
-            # print("\ r" + '-' * 5 + f'Сервер отключен: текущее количество подключений: ----- {len (clients)}' + '-' * 5, end = '\n')
-            # break
+
+            clients.remove(client)
+            end.remove(client)
+            print("\ r" + '-' * 5 + f'Сервер отключен: текущее количество подключений: ----- {len (clients)}' + '-' * 5, end = '\n')
+            break
 
         # print(indata.decode('utf-8'))
         for clien in clients:
@@ -131,14 +118,7 @@ def receive_file(sck: socket.socket, filename):
                 f.write(chunk)
                 received_bytes += len(chunk)
         print('Файл получен')
-# with socket.create_server((host, 9091)) as server:
-#     print("Ожидание клиента...")
-#     conn, address = server.accept()
-#     print(f"{address[0]}:{address[1]} подключен.")
-#     print("Получаем файл...")
-#     receive_file(conn, "image-received.png")
-#     print("Файл получен.")
-# print("Соединение закрыто.")
+
 
 
 # Создать многопоточность

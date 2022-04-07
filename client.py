@@ -69,14 +69,6 @@ def send_file(sck: socket.socket, filename):
     with open(filename, "rb") as f:
         while read_bytes := f.read(1024):
             sck.sendall(read_bytes)
-# with socket.create_connection((host, 9091)) as conn:
-#     print("Подключение к серверу.")
-#     print("Передача файла...")
-#     send_file(conn, "image.png")
-#     print("Отправлено.")
-# print("Соединение закрыто.")
-
-
 
 # Создать многопоточность
 # Установить получение информации, объект потока
