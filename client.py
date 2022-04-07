@@ -50,6 +50,7 @@ def indatas():
         print(indata.decode('utf-8'))
 
         if ('Сервер:' and 'Пришли файл') in indata.decode('utf-8'):
+            client.send(f'{name}:Я прислал файл'.encode('utf-8'))
             send_file_func()
             #client.send(f'{name}:Я прислал файл'.encode('utf-8'))
 

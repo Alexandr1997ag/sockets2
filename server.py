@@ -39,8 +39,10 @@ def recv_data(client):
         try:
 
             indata = client.recv(1024)
-            print(indata.decode('utf-8'))
-            receive_file(client, "image-received.png")
+            if 'Я прислал файл' in indata.decode('utf-8'):
+                receive_file(client, "image-received.png")
+            else:
+                print(indata.decode('utf-8'))
             # for clien in clients:
             #     # Перенаправить информацию от клиента и отправить ее другим клиентам
             #     if clien != client:
@@ -57,7 +59,7 @@ def recv_data(client):
             print("\ r" + '-' * 5 + f'Сервер отключен: текущее количество подключений: ----- {len (clients)}' + '-' * 5, end = '\n')
             break
 
-        else:
+        finally:
             for clien in clients:
                 # Перенаправить информацию от клиента и отправить ее другим клиентам
                 if clien != client:
