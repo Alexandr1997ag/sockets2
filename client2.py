@@ -38,8 +38,6 @@ def outdatas():
         client.send(f'{name}:{outdata}'.encode('utf-8'))
 
 
-        # send_file(client, "image.png")
-        # print('File has sent')
 
         print('%s:%s' % (name, outdata))
 
@@ -48,13 +46,13 @@ def indatas():
     while True:
         # Принимаем информацию с сервера
         indata = client.recv(1024)
-
         # Закодировать полученную информацию
         print(indata.decode('utf-8'))
 
-        if ('Сервер:' and 'Start client 2') in indata.decode('utf-8'):
+        if ('Сервер:' and f'Пришли файл, {name}') in indata.decode('utf-8'):
+            client.send(f'{name}:Я прислал файл'.encode('utf-8'))
             send_file_func()
-
+            #client.send(f'{name}:Я прислал файл'.encode('utf-8'))
 
 
 

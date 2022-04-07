@@ -1,6 +1,7 @@
 # Импортировать пакет сокетов
 import socket, threading
 import struct
+import os
 # Создаем объект сокета
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -35,12 +36,27 @@ def accept():
 
 def recv_data(client):
     while True:
-        # Принимаем информацию от клиента
+        # Принимаем информацию от клиента. Если приходит текст - печатаем его. Если файл, вызываем функцию receive_file
+        # получаем сообщение вместе с файлом
         try:
 
             indata = client.recv(1024)
             if 'Я прислал файл' in indata.decode('utf-8'):
-                receive_file(client, "image-received.png")
+                # Ищем индекс символа : , затем определяем имя клиента, записываем в переменную name
+                index = indata.decode('utf-8').find(':')
+                name = indata.decode('utf-8')[:index]
+                # Проверяем каталог на наличие папки, если нет - создаем, если есть, кладем файл в нужную папку
+                if os.path.exists(name):
+                    if os.path.isdir(name):
+                        print('Папка существует')
+                        filepath = name+'/'+'image-received.png'
+                else:
+                    print('Папка не существует')
+                    os.mkdir(name)
+                    filepath = name + '/' + 'image-received.png'
+                # выполняем сохранение в нужном каталоге
+                receive_file(client, filepath)
+                print(indata.decode('utf-8'))
             else:
                 print(indata.decode('utf-8'))
             # for clien in clients:
