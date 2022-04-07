@@ -37,12 +37,10 @@ def recv_data(client):
     while True:
         # Принимаем информацию от клиента
         try:
-            filepath = 'package/'+'image-received'+'0'+'.png'
 
             indata = client.recv(1024)
             print(indata.decode('utf-8'))
-            if not indata:
-                receive_file(client, filepath)
+            receive_file(client, "image-received.png")
             # for clien in clients:
             #     # Перенаправить информацию от клиента и отправить ее другим клиентам
             #     if clien != client:
@@ -53,22 +51,22 @@ def recv_data(client):
 
         except Exception as e:
             # если ловим текст, в блоке трай. работает except с заглушкой. иначе идем в функцию
-            #pass
+            # pass
             clients.remove(client)
             end.remove(client)
             print("\ r" + '-' * 5 + f'Сервер отключен: текущее количество подключений: ----- {len (clients)}' + '-' * 5, end = '\n')
             break
 
+        else:
+            for clien in clients:
+                # Перенаправить информацию от клиента и отправить ее другим клиентам
+                if clien != client:
+                    clien.send(indata)
+                else:
+                    continue
 
-        for clien in clients:
-            # Перенаправить информацию от клиента и отправить ее другим клиентам
-            if clien != client:
-                clien.send(indata)
-            else:
-                continue
 
-        #receive_file(client, "image-received.png")
-
+        #print('Файл получен')
 
 def outdatas():
     while True:
